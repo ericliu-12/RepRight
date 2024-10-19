@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
 import {
   Button,
   Text,
@@ -10,12 +10,30 @@ import {
 } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
+import axios from "axios";
 
 export default function HomeScreen() {
   const router = useRouter();
-
-  // Access the custom theme's colors
   const { colors } = useTheme();
+
+  // State to hold workout data
+  const [workouts, setWorkouts] = useState([]);
+  const [showProgress, setShowProgress] = useState(false);
+
+  // Fetch workouts from the backend
+  const fetchWorkouts = async () => {
+    try {
+      const response = await axios.get("http://10.246.179.1:5000/workouts");
+      setWorkouts(response.data);
+      // Convert the workouts array to a JSON string before passing it as a URL param
+      router.push({
+        pathname: "/data",
+        params: { workouts: JSON.stringify(response.data) }, // Pass workout data as a string
+      });
+    } catch (error) {
+      console.error("Error fetching workouts:", error);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -35,27 +53,51 @@ export default function HomeScreen() {
           mode="contained"
           onPress={() => router.push("/workout")}
           style={styles.button}
-          color={colors.primary}
+          buttonColor={colors.primary}
         >
           Start Workout
         </Button>
+
         <Button
           mode="contained"
-          onPress={() => alert("View Progress pressed!")}
+          onPress={fetchWorkouts} // Fetch data when "View Progress" is pressed
           style={styles.button}
-          color={colors.secondary}
+          buttonColor={colors.primary} // Use theme accent color
         >
           View Progress
         </Button>
+
         <Button
           mode="contained"
-          onPress={() => alert("Settings pressed!")}
+          onPress={() => alert("Login pressed!")}
           style={styles.button}
-          color={colors.secondary}
+          buttonColor={colors.primary}
         >
-          Settings
+          Login
         </Button>
       </View>
+
+      {/* Conditionally show the workout data */}
+      {showProgress && (
+        <ScrollView style={styles.progressContainer}>
+          <Title style={[styles.title, { color: colors.primary }]}>
+            Workout Progress
+          </Title>
+          {workouts.length > 0 ? (
+            workouts.map((workout, index) => (
+              <Card key={index} style={styles.workoutCard}>
+                <Card.Content>
+                  <Text>Workout ID: {workout[0]}</Text>
+                  <Text>Workout Time: {workout[1]}</Text>
+                  <Text>User ID: {workout[2]}</Text>
+                </Card.Content>
+              </Card>
+            ))
+          ) : (
+            <Text style={styles.noDataText}>No workouts found.</Text>
+          )}
+        </ScrollView>
+      )}
 
       <StatusBar style="auto" />
     </View>
@@ -92,5 +134,18 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 15,
     borderRadius: 5,
+  },
+  progressContainer: {
+    marginTop: 20,
+    width: "100%",
+  },
+  workoutCard: {
+    marginBottom: 15,
+    padding: 10,
+  },
+  noDataText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
   },
 });
