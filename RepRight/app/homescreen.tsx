@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView,Image } from "react-native";
 import {
   Button,
   Text,
@@ -40,6 +40,11 @@ export default function HomeScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Card style={[styles.card, { backgroundColor: colors.surface }]}>
         <Card.Content>
+          <Image
+            source={require('./assets/ReprightV2.png')} // Path to your logo image
+            style={{ width: 100, height: 50 }} // Adjust the size as needed
+            resizeMode="contain" // Ensures the logo is displayed with transparency
+          />
           <Title style={[styles.title, { color: colors.primary }]}>
             Welcome to RepRight
           </Title>
