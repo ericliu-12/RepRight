@@ -23,7 +23,8 @@ export default function HomeScreen() {
   // Fetch workouts from the backend
   const fetchWorkouts = async () => {
     try {
-      const response = await axios.get("http://10.246.179.1:5000/workouts");
+      //   const response = await axios.get("http://10.246.179.1:5000/workouts");
+      const response = await axios.get("http://100.64.26.136:5000/workouts");
       setWorkouts(response.data);
       // Convert the workouts array to a JSON string before passing it as a URL param
       router.push({

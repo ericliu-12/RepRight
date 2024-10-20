@@ -1,61 +1,150 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Button, Text, Card, Title } from "react-native-paper";
+import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { Button, Text, Card, Title, useTheme } from "react-native-paper";
 import axios from "axios";
+import { BarChart } from "react-native-chart-kit";
 
-type Workout = { workout_id: number; workout_time: string }; // Update type to match the returned workout data structure
+type Workout = { workout_id: number; workout_time: string };
+type Exercise = [string, number];
 
 export default function WorkoutScreen() {
   const [workout, setWorkout] = useState<Workout | null>(null);
-  const [currentTime, setCurrentTime] = useState<string | null>(null); // Tracks the current workout's time
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [currentId, setCurrentId] = useState<number | null>(null); // Tracks the current workout's ID
+  const [loading, setLoading] = useState<boolean>(true); // Add a loading state
+  const { colors } = useTheme(); // Get the theme colors
 
   // Fetch the most recent workout on mount
   useEffect(() => {
     fetchWorkout("recent");
   }, []);
 
-  // Function to fetch workouts
+  // Function to fetch workouts by workout_id
   const fetchWorkout = async (
     direction: "next" | "prev" | "recent",
-    workout_time: string | null = null
+    workout_id: number | null = null
   ) => {
     try {
-      const response = await axios.get("http://10.246.179.1:5000/workouts", {
+      setLoading(true); // Set loading to true when fetching data
+      const response = await axios.get("http://100.64.26.136:5000/workouts", {
         params: {
-          workout_time: workout_time,
+          workout_id: workout_id,
           direction: direction,
         },
       });
 
       if (response.data) {
-        // console.log(response.data);
         const fetchedWorkout = {
-          workout_id: response.data[0], // Assuming workout ID is at index 0
-          workout_time: response.data[1], // Assuming workout time is at index 1 and converting to readable string
+          workout_id: response.data.workout[0],
+          workout_time: response.data.workout[1],
         };
-        // console.log(fetchedWorkout);
         setWorkout(fetchedWorkout);
-        setCurrentTime(fetchedWorkout.workout_time); // Update the current workout time with the raw value
-        console.log(fetchedWorkout.workout_time);
+        setCurrentId(fetchedWorkout.workout_id); // Update the current workout ID with the returned value
+
+        // Ensure rep_count is converted to a number
+        const fetchedExercises = response.data.exercises;
+
+        // Set the exercises data
+        setExercises(fetchedExercises);
       }
     } catch (error) {
       console.error("Error fetching workout:", error);
+    } finally {
+      setLoading(false); // Set loading to false once data is fetched
     }
   };
 
+  // Prepare data for the BarChart and ensure valid data
+  const exerciseLabels = exercises.map((exercise) => exercise[0]);
+  const repCounts = exercises.map((exercise) => exercise[1]);
+
+  // Set the min and max Y-axis values dynamically
+  const maxRep = Math.max(...repCounts) + 10;
+  const minRep = Math.min(...repCounts) - 10;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.progressContainer}>
-        <Title style={styles.title}>Workout Progress</Title>
-        {workout ? (
-          <Card style={styles.workoutCard}>
-            <Card.Content>
-              <Text>Workout ID: {workout.workout_id}</Text>
-              <Text>Workout Time: {workout.workout_time}</Text>
-            </Card.Content>
-          </Card>
+        <Title style={[styles.title, { color: colors.primary }]}>
+          Workout Progress
+        </Title>
+        {loading ? (
+          <Text style={{ color: colors.primary }}>Loading...</Text>
+        ) : workout ? (
+          <>
+            <Card
+              style={[styles.workoutCard, { backgroundColor: colors.surface }]}
+            >
+              <Card.Content>
+                <Text>Workout ID: {workout.workout_id}</Text>
+                <Text>Workout Time: {workout.workout_time}</Text>
+              </Card.Content>
+            </Card>
+
+            {exercises.length > 0 && (
+              <View style={styles.chartContainer}>
+                <BarChart
+                  data={{
+                    labels: exerciseLabels, // Exercise names
+                    datasets: [
+                      {
+                        data: repCounts, // Rep counts for each exercise
+                      },
+                    ],
+                  }}
+                  width={Dimensions.get("window").width - 40} // Adjust the width to fit the screen
+                  height={250} // Slightly increased height for better display
+                  yAxisLabel=""
+                  yAxisSuffix=" reps" // Suffix to add to the Y-axis values
+                  chartConfig={{
+                    backgroundColor: "#ffffff", // White background for the chart
+                    backgroundGradientFrom: "#ffffff", // White gradient for the chart
+                    backgroundGradientTo: "#ffffff", // White gradient for the chart
+                    decimalPlaces: 0, // No decimals for rep counts
+                    color: (opacity = 1) => colors.primary, // Dark purple bars
+                    labelColor: (opacity = 1) => colors.primary, // Dark purple text
+                    style: {
+                      borderRadius: 16,
+                      shadowColor: "#000", // Adding shadow to the box
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+                      elevation: 5,
+                      padding: 10, // Add padding for the chart
+                    },
+                    propsForDots: {
+                      r: "6", // Size of the dots
+                      strokeWidth: "2",
+                      stroke: colors.onPrimary, // Dot stroke color
+                    },
+                    propsForBackgroundLines: {
+                      stroke: colors.outline, // Background lines color
+                    },
+                    barPercentage: 0.9, // Thicker bars and reduced gap
+                  }}
+                  fromZero={true} // Start the Y-axis from zero
+                  yAxisInterval={1} // Optional: How many ticks per Y-axis interval
+                  withHorizontalLabels={true} // Show horizontal labels
+                  withVerticalLabels={true} // Show vertical labels
+                  withInnerLines={false} // No inner grid lines
+                  showBarTops={false} // Turn off bar tops to avoid extra lines
+                  segments={4} // Number of Y-axis segments
+                  showValuesOnTopOfBars={true} // Show values on top of bars
+                  yMin={minRep} // Min limit for Y-axis
+                  yMax={maxRep} // Max limit for Y-axis
+                  style={{
+                    marginVertical: 10, // Add margin for better spacing
+                    paddingHorizontal: 20, // Padding around the graph
+                    borderRadius: 16,
+                  }}
+                />
+              </View>
+            )}
+          </>
         ) : (
-          <Text style={styles.noDataText}>No workout found.</Text>
+          <Text style={[styles.noDataText, { color: colors.primary }]}>
+            No workout found.
+          </Text>
         )}
       </ScrollView>
 
@@ -63,8 +152,8 @@ export default function WorkoutScreen() {
         {/* Previous button */}
         <Button
           mode="contained"
-          onPress={() => fetchWorkout("prev", currentTime)} // Fetch previous workout
-          disabled={!currentTime} // Disable if no workout is available
+          onPress={() => fetchWorkout("prev", currentId)} // Fetch previous workout by ID
+          disabled={!currentId} // Disable if no workout is available
           style={styles.button}
         >
           Previous
@@ -73,8 +162,8 @@ export default function WorkoutScreen() {
         {/* Next button */}
         <Button
           mode="contained"
-          onPress={() => fetchWorkout("next", currentTime)} // Fetch next workout
-          disabled={!currentTime} // Disable if no workout is available
+          onPress={() => fetchWorkout("next", currentId)} // Fetch next workout by ID
+          disabled={!currentId} // Disable if no workout is available
           style={styles.button}
         >
           Next
@@ -102,6 +191,12 @@ const styles = StyleSheet.create({
   workoutCard: {
     marginBottom: 15,
     padding: 10,
+  },
+  chartContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
   noDataText: {
     textAlign: "center",
