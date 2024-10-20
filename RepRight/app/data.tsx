@@ -26,7 +26,7 @@ export default function WorkoutScreen() {
   ) => {
     try {
       setLoading(true); // Set loading to true when fetching data
-      const response = await axios.get("http://100.64.26.136:5000/workouts", {
+      const response = await axios.get("http://10.246.179.1:5000/workouts", {
         params: {
           workout_id: workout_id,
           direction: direction,
@@ -40,7 +40,7 @@ export default function WorkoutScreen() {
         };
         setWorkout(fetchedWorkout);
         setCurrentId(fetchedWorkout.workout_id); // Update the current workout ID with the returned value
-
+        console.log(response.data);
         // Ensure rep_count is converted to a number
         const fetchedExercises = response.data.exercises;
 
