@@ -1,0 +1,41 @@
+2024-10-19 17:02:37,906 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.246.179.1:5000
+2024-10-19 17:02:37,906 - INFO - [33mPress CTRL+C to quit[0m
+2024-10-19 17:02:50,643 - INFO - Executing query: SELECT * FROM workouts ORDER BY workout_time DESC LIMIT 1
+2024-10-19 17:02:50,645 - INFO - Query result: (10, datetime.datetime(2024, 10, 18, 14, 50, 49, 493630))
+2024-10-19 17:02:50,645 - INFO - 10.246.179.1 - - [19/Oct/2024 17:02:50] "GET /workouts?direction=recent HTTP/1.1" 200 -
+2024-10-19 17:02:53,146 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time < %s ORDER BY workout_time DESC LIMIT 1 with workout_time = 2024-10-18 14:50:49
+2024-10-19 17:02:53,148 - INFO - Query result: (9, datetime.datetime(2024, 10, 17, 14, 50, 49, 493630))
+2024-10-19 17:02:53,148 - INFO - 10.246.179.1 - - [19/Oct/2024 17:02:53] "GET /workouts?workout_time=Fri,+18+Oct+2024+14:50:49+GMT&direction=prev HTTP/1.1" 200 -
+2024-10-19 17:02:54,629 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-17 14:50:49
+2024-10-19 17:02:54,635 - INFO - Query result: (9, datetime.datetime(2024, 10, 17, 14, 50, 49, 493630))
+2024-10-19 17:02:54,638 - INFO - 10.246.179.1 - - [19/Oct/2024 17:02:54] "GET /workouts?workout_time=Thu,+17+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
+2024-10-19 17:07:43,420 - INFO - Executing query: SELECT * FROM workouts ORDER BY workout_time DESC LIMIT 1
+2024-10-19 17:07:43,422 - INFO - Query result: (10, datetime.datetime(2024, 10, 18, 14, 50, 49, 493630))
+2024-10-19 17:07:43,423 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:43] "GET /workouts?direction=recent HTTP/1.1" 200 -
+2024-10-19 17:07:45,256 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-18 14:50:49
+2024-10-19 17:07:45,259 - INFO - Query result: (10, datetime.datetime(2024, 10, 18, 14, 50, 49, 493630))
+2024-10-19 17:07:45,260 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:45] "GET /workouts?workout_time=Fri,+18+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
+2024-10-19 17:07:46,264 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time < %s ORDER BY workout_time DESC LIMIT 1 with workout_time = 2024-10-18 14:50:49
+2024-10-19 17:07:46,268 - INFO - Query result: (9, datetime.datetime(2024, 10, 17, 14, 50, 49, 493630))
+2024-10-19 17:07:46,269 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:46] "GET /workouts?workout_time=Fri,+18+Oct+2024+14:50:49+GMT&direction=prev HTTP/1.1" 200 -
+2024-10-19 17:07:46,758 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time < %s ORDER BY workout_time DESC LIMIT 1 with workout_time = 2024-10-17 14:50:49
+2024-10-19 17:07:46,760 - INFO - Query result: (8, datetime.datetime(2024, 10, 16, 14, 50, 49, 493630))
+2024-10-19 17:07:46,760 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:46] "GET /workouts?workout_time=Thu,+17+Oct+2024+14:50:49+GMT&direction=prev HTTP/1.1" 200 -
+2024-10-19 17:07:47,800 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-16 14:50:49
+2024-10-19 17:07:47,805 - INFO - Query result: (8, datetime.datetime(2024, 10, 16, 14, 50, 49, 493630))
+2024-10-19 17:07:47,806 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:47] "GET /workouts?workout_time=Wed,+16+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
+2024-10-19 17:07:48,227 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-16 14:50:49
+2024-10-19 17:07:48,231 - INFO - Query result: (8, datetime.datetime(2024, 10, 16, 14, 50, 49, 493630))
+2024-10-19 17:07:48,231 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:48] "GET /workouts?workout_time=Wed,+16+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
+2024-10-19 17:07:48,531 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-16 14:50:49
+2024-10-19 17:07:48,534 - INFO - Query result: (8, datetime.datetime(2024, 10, 16, 14, 50, 49, 493630))
+2024-10-19 17:07:48,537 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:48] "GET /workouts?workout_time=Wed,+16+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
+2024-10-19 17:07:48,691 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-16 14:50:49
+2024-10-19 17:07:48,695 - INFO - Query result: (8, datetime.datetime(2024, 10, 16, 14, 50, 49, 493630))
+2024-10-19 17:07:48,697 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:48] "GET /workouts?workout_time=Wed,+16+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
+2024-10-19 17:07:48,821 - INFO - Executing query: SELECT * FROM workouts WHERE workout_time > %s ORDER BY workout_time ASC LIMIT 1 with workout_time = 2024-10-16 14:50:49
+2024-10-19 17:07:48,825 - INFO - Query result: (8, datetime.datetime(2024, 10, 16, 14, 50, 49, 493630))
+2024-10-19 17:07:48,826 - INFO - 10.246.179.1 - - [19/Oct/2024 17:07:48] "GET /workouts?workout_time=Wed,+16+Oct+2024+14:50:49+GMT&direction=next HTTP/1.1" 200 -
